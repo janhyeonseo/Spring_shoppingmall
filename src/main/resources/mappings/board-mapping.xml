@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Board">
+
+<insert id="INSERT" parameterType="BoardVO">
+ insert into Board (seq, title, writer,content) 
+ values (idx.nextval,#{title}, #{writer}, #{content} )
+</insert>
+
+<update id="UPDATE" parameterType="BoardVO">
+  update Board set  title =#{title} , writer =#{writer} ,content= #{content} 
+  where seq = #{seq} 
+</update>
+
+<delete id="DELETE" parameterType="BoardVO">
+ delete from  Board where seq = #{seq} 
+</delete>
+
+
+<select id="BoardSelectOne" parameterType="BoardVO"  resultType ="BoardVO" >
+ select  *  from  Board  where seq = #{seq}
+</select>
+
+<select id="BoardSelect" parameterType="BoardVO"  resultType ="BoardVO" >
+select ROWNUM  , K.* 
+ from
+    (  select rownum as rnum , P.* 
+       from
+          (select * from board 
+ 			where 1 = 1 
+			 <if test="searchCondition == 'title'" >
+			   and  title like #{searchKeyword}  ESCAPE '\'
+			 </if>
+			 <if test="searchCondition == 'writer'" >
+			  and  writer like #{searchKeyword}  ESCAPE '\'
+			 </if>
+  			 order by  seq  desc ) P
+  
+          <![CDATA[   
+          where ROWNUM <= #{end}
+        ]]>
+       
+     ) K 
+<![CDATA[  
+ where rnum >= #{start}
+]]>
+</select>
+
+<select id="BoardCount" parameterType="BoardVO"  resultType ="BoardVO" >
+ <![CDATA[
+  select  count(*) as tc  from  Board 
+  where 1 = 1
+ ]]>
+ <if test="searchCondition == 'title'" >
+   and  title like #{searchKeyword}  ESCAPE '\'
+ </if>
+ <if test="searchCondition == 'writer'" >
+  and  writer like #{searchKeyword}  ESCAPE '\'
+ </if>
+
+</select>
+
+<insert id="bigInsert" parameterType="BoardVO">
+ insert into Board (seq, title, writer,content) 
+ values (idx.nextval,#{title}, #{writer}, #{content} )
+</insert>
+
+<select id="selectTop" parameterType="BoardVO"  resultType ="BoardVO" >
+select ROWNUM  , K.* 
+ from
+    (  select rownum as rnum , P.* 
+       from
+          (select * from board  order  by seq  desc) P
+        <![CDATA[   
+          where ROWNUM <= #{end}
+        ]]>
+       
+     ) K 
+<![CDATA[  
+ where rnum >= #{start}
+]]>
+</select>
+
+
+<select id="BoardSelect2" parameterType="BoardVO"  resultType ="BoardVO" >
+ select  *  from  Board 
+ where 1 = 1
+ <if test="searchCondition == 'title'" >
+   and  title like #{searchKeyword}
+ </if>
+ <if test="searchCondition == 'writer'" >
+  and  writer like #{searchKeyword}
+ </if>
+  order by  seq  desc
+</select>
+
+
+
+</mapper>

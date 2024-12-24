@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="SHOPPING">
+<insert id="GolfproductInsert"  parameterType="GolfproductVo" > 
+   insert into golfproduct (pid, pname,pprice,pbaesongbi,pdesc,pimg) 
+   values (spid.nextval,#{pname},#{pprice},#{pbaesongbi},#{pdesc},#{pimgStr} ) 
+</insert>
+
+<select id="Select"  resultType ="GolfproductVo" >
+  select pid, pname, pprice, pbaesongbi, pdesc, pimg as pimgStr
+  from  golfproduct
+</select>
+
+
+<select id="SelectOne" parameterType="GolfproductVo"  resultType ="GolfproductVo" >
+  select pid, pname, pprice, pbaesongbi, pdesc, pimg as pimgStr
+  from  golfproduct  where pid =#{pid}
+  
+</select>
+
+
+<delete id="cartDelete"  parameterType="CartVO" > 
+   delete from golf_cart where  mid =#{mid} 
+</delete>
+
+<delete id="cartDeleteOne"  parameterType="CartVO" > 
+   delete from golf_cart where  cart_id =#{cart_id} 
+</delete>
+
+<select id="cartList" parameterType="CartVO"  resultType ="CartVO" >
+  select c.cart_id, c.mid, c.pid, c.amount, p.pname, p.pprice, p.pimg
+  from  golf_cart c join golfproduct p on c.pid = p.pid  
+  where c.mid =#{mid}  
+</select>
+
+<insert id="cartInsert"  parameterType="CartVO" > 
+   insert into golf_cart (cart_id, mid, pid, amount) 
+   values (cartSid.nextval,#{mid},#{pid},#{amount} ) 
+</insert>
+
+<update id="cartUpdate"  parameterType="CartVO" > 
+   update  golf_cart 
+   set amount = #{amount} 
+   where cart_id = #{cart_id} 
+</update>
+
+
+<insert id="orderInsert"  parameterType="OrderVO" > 
+   insert into golforderT (idxOrder, cart_id, orderG,  mid, pid, amount) 
+   values (orderTSid.nextval,#{cart_id},#{orderG},#{mid},#{pid},#{amount} ) 
+</insert>
+
+<select id="orderList" parameterType="OrderVO"  resultType ="OrderVO" >
+  select orderG, mid, T.TEACHER_NAME , G.TODAY , SUM ( pprice * G.AMOUNT ) as amount from golforderT   G
+  join  TBL_TEACHER_202201 T
+  on G.MID = T.TEACHER_CODE join golfproduct  P  on
+  P.pid = G.PID
+  group  by orderG, mid, T.TEACHER_NAME , G.TODAY
+  order  by today desc 
+</select>
+
+<select id="orderListdetail" parameterType="OrderVO"  resultType ="OrderdetailVO" >
+
+  select orderG, teacher_code, teacher_name, class_name, pname, pprice, amount, pimg , today from golforderT   G
+  join  TBL_TEACHER_202201 T
+  on G.MID = T.TEACHER_CODE join golfproduct  P  on
+  P.pid = G.PID where orderG=#{orderG}
+  
+</select>
+
+<select id="shopTeacherMoney"  resultType ="TeacherVO" >
+
+  select TEACHER_CODE, TEACHER_NAME, T.CLASS_NAME, sum(pprice * amount) amount from golforderT   G
+  join  TBL_TEACHER_202201 T
+  on G.MID = T.TEACHER_CODE join golfproduct  P  on
+  P.pid = G.PID 
+  Group by teacher_code, teacher_name, T.class_name
+  
+</select>
+
+</mapper>

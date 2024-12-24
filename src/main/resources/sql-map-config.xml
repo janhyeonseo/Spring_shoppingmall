@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC 
+  "-//mybatis.org//DTD Config 3.0//EN" 
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+  <typeAliases>
+
+    <typeAlias alias="BoardVO"   type="com.maju.biz.board.BoardVO" />
+      
+    <typeAlias alias="ClassVO"   type="com.maju.biz.golf.vo.ClassVO" />  
+    <typeAlias alias="MemberVO"  type="com.maju.biz.golf.vo.MemberVO" />  
+    <typeAlias alias="MoneyVO"   type="com.maju.biz.golf.vo.MoneyVO" />  
+    <typeAlias alias="TeacherVO" type="com.maju.biz.golf.vo.TeacherVO" />  
+    <typeAlias alias="LoginVO"   type="com.maju.biz.login.LoginVO" />       
+    <typeAlias alias="GolfproductVo"   type="com.maju.biz.shoppingmall.GolfproductVo" />               
+    <typeAlias alias="CartVO"   type="com.maju.biz.shoppingmall.CartVO" />  
+    <typeAlias alias="OrderVO"   type="com.maju.biz.shoppingmall.OrderVO" /> 
+    <typeAlias alias="OrderdetailVO"   type="com.maju.biz.shoppingmall.OrderdetailVO" />  
+         
+      
+  </typeAliases>
+
+  <mappers>
+  
+    <mapper resource="mappings/board-mapping.xml"  />
+    <mapper resource="mappings/golf-mapping.xml"  />
+    <mapper resource="mappings/login-mapping.xml"  />
+    <mapper resource="mappings/shopping-mapping.xml"  />
+    
+  </mappers>
+</configuration>

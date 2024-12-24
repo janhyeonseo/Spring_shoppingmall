@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Golf">
+
+<insert id="Insert" parameterType="ClassVO">  
+ 	INSERT INTO TBL_CLASS_202201
+	(REGIST_MONTH, C_NO,CLASS_AREA,TUITION,TEACHER_CODE) 
+	 VALUES(#REGIST_MONTH},#{C_NO}, #{CLASS_AREA}, #{TUITION},#{TEACHER_CODE})
+</insert>
+
+<select id="TeacherList"   resultType ="TeacherVO" >
+  select  *  from  TBL_TEACHER_202201  
+  where 1 = 1
+  <if test="searchCondition == 'TEACHER_CODE'"> 
+     and  TEACHER_CODE like #{searchKeyword}
+  </if>
+  
+  <if test="searchCondition == 'TEACHER_NAME'"> 
+       and  TEACHER_NAME like #{searchKeyword}
+  </if>
+  
+  <if test="searchCondition == 'addr'"> 
+       and  addr like #{searchKeyword}
+  </if>
+  order by  TEACHER_CODE 
+</select>
+
+<insert id="TeacherEvaluationInsert" parameterType="TeacherVO">  
+ 	INSERT INTO TeacherEvaluation 
+	(idx,TEACHER_CODE   ,Evaluation   ,rating  ) 
+	 VALUES(TEseq.nextval  ,#{TEACHER_CODE}, #{Evaluation}, #{rating})
+</insert>
+
+<select id="TeacherEvaluationSelect"   resultType ="TeacherVO" >
+  select  idx, TEACHER_CODE, Evaluation , rating,  today 
+  from  TeacherEvaluation 
+  where  TEACHER_CODE=#{TEACHER_CODE}  order by  idx desc 
+</select>
+
+
+<select id="teacherDetail" parameterType="TeacherVO"  resultType ="TeacherVO" >
+  select  *  from  TBL_TEACHER_202201 
+  where  TEACHER_CODE =#{TEACHER_CODE} 
+</select>
+
+<select id="MemberList"   resultType ="MemberVO" >
+ select  REGIST_MONTH, M.C_NO as C_NO, C_NAME,
+			          CLASS_NAME, CLASS_AREA, TUITION ,GRADE 
+			 from TBL_MEMBER_202201 M join TBL_CLASS_202201 C 
+			 on M.C_NO = C.C_NO join TBL_TEACHER_202201 T 
+			 on T.TEACHER_CODE = C.TEACHER_CODE order  by REGIST_MONTH  desc
+</select>
+
+<select id="TeacherMoney"   resultType ="MoneyVO" >
+  select  T.TEACHER_CODE as T1 ,CLASS_NAME as T2 ,
+			  TEACHER_NAME as T3, sum(TUITION) as T4 
+			 from TBL_MEMBER_202201 M join TBL_CLASS_202201 C 
+			 on M.C_NO = C.C_NO join TBL_TEACHER_202201 T 
+			 on T.TEACHER_CODE = C.TEACHER_CODE 
+			 group  by T.TEACHER_CODE,CLASS_NAME,TEACHER_NAME 
+			 order  by  T.TEACHER_CODE 
+</select>
+
+	<!--  
+
+	final String TeacherList = "select  *  from  TBL_TEACHER_202201  order by  TEACHER_CODE " ;
+	
+	final String MemberList ="select  REGIST_MONTH, M.C_NO as C_NO, C_NAME,"
+			+ "          CLASS_NAME, CLASS_AREA, TUITION ,GRADE "
+			+ " from TBL_MEMBER_202201 M join TBL_CLASS_202201 C "
+			+ " on M.C_NO = C.C_NO join TBL_TEACHER_202201 T "
+			+ " on T.TEACHER_CODE = C.TEACHER_CODE order  by REGIST_MONTH desc ";
+	
+	final String TeacherMoney = " select  T.TEACHER_CODE as T1 ,CLASS_NAME as T2 ,"
+			+ "   TEACHER_NAME as T3, sum(TUITION) as T4 "
+			+ " from TBL_MEMBER_202201 M join TBL_CLASS_202201 C "
+			+ " on M.C_NO = C.C_NO join TBL_TEACHER_202201 T "
+			+ " on T.TEACHER_CODE = C.TEACHER_CODE "
+			+ " group  by T.TEACHER_CODE,CLASS_NAME,TEACHER_NAME "
+			+ " order  by  T.TEACHER_CODE ";
+	
+
+	
+
+	-->
+	
+
+</mapper>
